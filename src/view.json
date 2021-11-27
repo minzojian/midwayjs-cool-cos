@@ -1,0 +1,83 @@
+[
+    {
+        "label": "accessKeyId",
+        "prop": "accessKeyId",
+        "component": {
+            "name": "el-input",
+            "attrs": {
+                "placeholder": "腾讯云accessKeyId"
+            }
+        },
+        "props": {
+            "label-width": "130px"
+        },
+        "rules": {
+            "required": true,
+            "message": "值不能为空"
+        }
+    },
+    {
+        "label": "accessKeySecret",
+        "prop": "accessKeySecret",
+        "component": {
+            "name": "el-input",
+            "attrs": {
+                "placeholder": "腾讯云accessKeySecret"
+            }
+        },
+        "props": {
+            "label-width": "130px"
+        },
+        "rules": {
+            "required": true,
+            "message": "值不能为空"
+        }
+    },
+    {
+        "label": "bucket",
+        "prop": "bucket",
+        "component": {
+            "name": "el-input",
+            "attrs": {
+                "placeholder": "腾讯云COS的bucket"
+            }
+        },
+        "props": {
+            "label-width": "130px"
+        },
+        "rules": {
+            "required": true,
+            "message": "值不能为空"
+        }
+    },
+    {
+        "label": "region",
+        "prop": "region",
+        "component": {
+            "name": "el-input",
+            "attrs": {
+                "placeholder": "腾讯云COS的region"
+            }
+        },
+        "props": {
+            "label-width": "130px"
+        },
+        "rules": {
+            "required": true,
+            "message": "值不能为空"
+        }
+    },
+    {
+        "label": "publicDomain",
+        "prop": "publicDomain",
+        "component": {
+            "name": "el-input",
+            "attrs": {
+                "placeholder": "Bucket对应的公开地址,比如CDN地址"
+            }
+        },
+        "props": {
+            "label-width": "130px"
+        }
+    }
+]
