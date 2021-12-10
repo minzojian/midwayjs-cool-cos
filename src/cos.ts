@@ -2,7 +2,7 @@ import { IMidwayApplication } from '@midwayjs/core';
 import { App, Init, Inject, Logger, Provide, Scope, ScopeEnum } from '@midwayjs/decorator';
 import { ILogger } from '@midwayjs/logger';
 import * as COS from 'cos-nodejs-sdk-v5';
-import { CoolPlugin, ICoolFile, MODETYPE, PLUGINSTATUS } from 'midwayjs-cool-core';
+import { CoolPlugin, ICoolFile, MODETYPE, PLUGINSTATUS } from '@cool-midway/core';
 // @ts-ignore
 import * as config from "./package.json";
 
@@ -20,9 +20,11 @@ export class CosHandler implements ICoolFile {
     @Logger()
     coreLogger: ILogger;
 
+    namespace: string
 
     @Init()
     async init() {
+        this.namespace = config.name.split('/')[1];
         return await this.checkStatus();
     }
 
@@ -62,9 +64,9 @@ export class CosHandler implements ICoolFile {
 
     async upload(ctx) {
 
-        let { fileName, folder } = ctx.request.body;
+        let { fileName, folder } = ctx.request.query;
         let key = await this.createKey(fileName, folder);
-        const { accessKeyId, accessKeySecret, bucket, region, publicDomain } = await this.coolPlugin.getConfig(config.name.split('-')[2]);
+        const { accessKeyId, accessKeySecret, bucket, region, publicDomain } = await this.coolPlugin.getConfig(this.namespace);
 
         let cosDomain =
             publicDomain || ('https://' + bucket +
@@ -91,14 +93,15 @@ export class CosHandler implements ICoolFile {
                 else
                     resolve({
                         uploadUrl: data.Url, publicUrl: cosDomain +
-                            key
+                            key,
+                        method: "PUT"
                     });
             });
 
         })
     }
     async checkStatus() {
-        const { accessKeyId, accessKeySecret, bucket, region } = await this.coolPlugin.getConfig(config.name.split('-')[2]);
+        const { accessKeyId, accessKeySecret, bucket, region } = await this.coolPlugin.getConfig(this.namespace);
         if (!accessKeyId || !accessKeySecret || !bucket || !region) {
             return PLUGINSTATUS.NOCONF;
         }

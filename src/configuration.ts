@@ -7,11 +7,11 @@ import { CosHandler } from './cos';
 import { join } from 'path';
 // @ts-ignore
 import * as config from "./package.json";
-import { CoolPlugin, COOL_FILE_KEY } from 'midwayjs-cool-core';
+import { CoolPlugin, COOL_FILE_KEY } from '@cool-midway/core';
 
 @Configuration({
   // 按照命名规范: midwayjs-cool-空间名
-  namespace: config.name.split('-')[2],
+  namespace: config.name.split('/')[1],
   importConfigs: [
     join(__dirname, 'config')
   ]
