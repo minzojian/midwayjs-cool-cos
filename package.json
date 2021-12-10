@@ -1,7 +1,7 @@
 {
     "name": "midwayjs-cool-cos",
     "pluginName": "COS上传",
-    "version": "1.0.2",
+    "version": "1.0.0",
     "description": "将文件上传到腾讯云COS，前端签名直传方式",
     "author": "KentWood",
     "contact": "QQ:23471079",
@@ -38,7 +38,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/cool-team-official/cool-admin-midway"
+        "url": "https://github.com/minzojian/midwayjs-cool-cos"
     },
     "dependencies": {
         "cos-nodejs-sdk-v5": "^2.11.3"
