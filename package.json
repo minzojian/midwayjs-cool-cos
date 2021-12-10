@@ -1,7 +1,7 @@
 {
     "name": "midwayjs-cool-cos",
     "pluginName": "COS上传",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "将文件上传到腾讯云COS，前端签名直传方式",
     "author": "KentWood",
     "contact": "QQ:23471079",

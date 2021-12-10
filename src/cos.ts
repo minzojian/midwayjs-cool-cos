@@ -62,7 +62,7 @@ export class CosHandler implements ICoolFile {
 
     async upload(ctx) {
 
-        let { fileName, folder } = ctx.request.body;
+        let { fileName, folder } = ctx.request.query;
         let key = await this.createKey(fileName, folder);
         const { accessKeyId, accessKeySecret, bucket, region, publicDomain } = await this.coolPlugin.getConfig(config.name.split('-')[2]);
 
@@ -91,7 +91,8 @@ export class CosHandler implements ICoolFile {
                 else
                     resolve({
                         uploadUrl: data.Url, publicUrl: cosDomain +
-                            key
+                            key,
+                        method: "PUT"
                     });
             });
 
