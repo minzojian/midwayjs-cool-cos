@@ -28,6 +28,10 @@ folder 文件夹
 			// 多种上传请求
 			const upload = (file) => {
 				let fileName = file.name;
+				// 是否以 uuid 重新命名
+				if (this._rename) {
+					fileName = uuidv4() + "." + last((file.name || "").split("."));
+				}
 				return new Promise((resolve, reject) => {
 					const next = (res) => {
 						let headers = {};
@@ -37,7 +41,22 @@ folder 文件夹
 						//如果返回的数据中已经包含了uploadUrl，说明是预签名上传，就直接传文件就好了
 						if (res.uploadUrl) {
 							uploadUrl = res.uploadUrl;
-							updateData = file;
+							if(res.uploadData){
+								const data = new FormData();
+								for (const i in res.uploadData) {
+									if (i != "fileKey") {
+										data.append(i, res.uploadData[i]);
+									}
+								}
+								data.append(res.uploadData.fileKey||"file", file);
+								headers = {
+									"Content-Type": "multipart/form-data"
+								};
+								updateData = data;
+
+							}else{
+								updateData = file;
+							}
 							uploadMethod = res.method || uploadMethod;
 						} else {
 							uploadUrl = res.host;
@@ -47,16 +66,11 @@ folder 文件夹
 									data.append(i, res[i]);
 								}
 							}
-							// 是否以 uuid 重新命名
-							if (this._rename) {
-								fileName = uuidv4() + "." + last((file.name || "").split("."));
-							}
+
 							data.append("key", `app/${fileName}`);
 							data.append("file", file);
 							headers = {
-								headers: {
-									"Content-Type": "multipart/form-data"
-								}
+								"Content-Type": "multipart/form-data"
 							};
 							updateData = data;
 						}
@@ -121,6 +135,84 @@ folder 文件夹
 
 			this.loading = false;
 		},
+```
+
+以及`src\service\request.ts:95`行的相关代码，针对外站的响应处理应该忽略
+
+```
+// Response
+axios.interceptors.response.use(
+	(res: any) => {
+		NProgress.done();
+		const { code, data, message } = res.data;
+
+		try {
+			if (new URL(res?.config?.url).host != new URL(location.href).host) {
+				return res;
+			}
+		} catch (err) { }
+
+		if (!res.data) {
+			return res;
+		}
+
+		switch (code) {
+			case 1000:
+				return data;
+			default:
+				return Promise.reject(message);
+		}
+	},
+	async (error) => {
+		NProgress.done();
+
+		if (error.response) {
+			const { status, config } = error.response;
+
+
+			if (new URL(error.response.config.url).host != new URL(location.href).host) {
+				return Promise.reject(error.message);;
+			}
+
+			switch (status) {
+				case 401:
+					await store.dispatch("userRemove");
+					href("/login");
+					break;
+
+				case 403:
+					if (isDev) {
+						ElMessage.error(`${config.url} 无权限访问！！`);
+					} else {
+						href("/403");
+					}
+					break;
+
+				case 404:
+					break;
+
+				case 500:
+					if (!isDev) {
+						href("/500");
+					}
+					break;
+
+				case 502:
+					if (isDev) {
+						ElMessage.error(`${config.url} 服务异常！！`);
+					} else {
+						href("/502");
+					}
+					break;
+
+				default:
+					console.error(status, config.url);
+			}
+		}
+
+		return Promise.reject(error.message);
+	}
+);
 ```
 
 当前分支是针对 4.X 版本的，要使用 3.x 版本，请切到分支 cool3 下
