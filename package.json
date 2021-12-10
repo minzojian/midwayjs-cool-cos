@@ -39,7 +39,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/cool-team-official/cool-admin-midway"
+        "url": "https://github.com/minzojian/midwayjs-cool-cos"
     },
     "dependencies": {
         "cos-nodejs-sdk-v5": "^2.11.3"
